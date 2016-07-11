@@ -52,14 +52,16 @@ namespace RSApiTester
 
 			client.Write(buffer, 0, buffer.Length);
 
-			string ret = "";
-			byte[] readbuf = new byte[1024];
+			MemoryStream concat = new MemoryStream();
+			byte[] readbuf = new byte[128];
 			int rc;
-			do{
+			do
+			{
 				rc = client.Read(readbuf, 0, readbuf.Length);
-				ret += ASCIIEncoding.UTF8.GetString(readbuf, 0, rc);
-			}while(rc == readbuf.Length);
-			return ret;
+				concat.Write(readbuf, 0, rc);
+			} while (rc > 0 && readbuf[rc - 1] != 0);
+
+			return ASCIIEncoding.UTF8.GetString(concat.GetBuffer(), 0, (int)concat.Length - 1);
 		}
 
 		private void button2_Click(object sender, EventArgs e)

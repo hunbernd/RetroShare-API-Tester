@@ -1,12 +1,15 @@
-﻿using System;
+﻿using RetroShareApi.Connection;
+using RetroShareApi.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace RetroShareApi.Connection
+namespace RetroShareApi.Request
 {
-    public class Request
+    public class Request <RespType>
     {
         public Request(string sector, string function = "", string data = null)
         {
@@ -15,22 +18,27 @@ namespace RetroShareApi.Connection
             this.data = data;
         }
 
-        public string sector
+        public virtual string sector
         {
             get;
             protected set;
         }
 
-        public string function
+        public virtual string function
         {
             get;
             protected set;
         }
 
-        public string data
+        public virtual string data
         {
             get;
             protected set;
+        }
+
+        public virtual Response<RespType> Execute(IConnection connection)
+        {
+            return JsonConvert.DeserializeObject<Response<RespType>>(connection.SendRequest(sector, function, data));
         }
     }
 }

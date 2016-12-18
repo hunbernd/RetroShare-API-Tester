@@ -23,22 +23,22 @@ namespace RetroShareApi.Connection
             private set;
         }
 
-        public string sendRequest(Request request)
+        public string SendRequest(string sector, string function = "", string data = null)
         {
             string path = URIADD;
-            if (!string.IsNullOrEmpty(request.sector)) path += "/" + request.sector;
-            if (!string.IsNullOrEmpty(request.function)) path += "/" + request.function;
+            if (!string.IsNullOrEmpty(sector)) path += "/" + sector;
+            if (!string.IsNullOrEmpty(function)) path += "/" + function;
             Uri requri = new Uri(url, path);
             WebRequest webrequest = WebRequest.Create(requri);
 
-            if (String.IsNullOrEmpty(request.data))
+            if (String.IsNullOrEmpty(data))
             {
                 webrequest.Method = "GET";
             }
             else
             {
                 webrequest.Method = "POST";
-                byte[] tosend = Encoding.UTF8.GetBytes(request.data);
+                byte[] tosend = Encoding.UTF8.GetBytes(data);
                 webrequest.ContentLength = tosend.Length;
                 webrequest.ContentType = "application/json";
                 Stream dataStream = webrequest.GetRequestStream();

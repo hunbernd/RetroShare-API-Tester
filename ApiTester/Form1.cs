@@ -38,7 +38,7 @@ namespace RSApiTester
 
 		string sendRequest(string sector, string function, string data)
 		{
-            return client.sendRequest(new Request(sector, function, data));
+            return client.SendRequest(sector, function, data);
 		}
 
         private void button2_Click(object sender, EventArgs e)

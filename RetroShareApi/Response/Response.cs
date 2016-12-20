@@ -14,7 +14,7 @@ namespace RetroShareApi.Response
         public string returncode;
         public string debug_msg;
         public DataType data;
-        public int statetoken;
+        public int? statetoken = null;
 
         public override string ToString()
         {

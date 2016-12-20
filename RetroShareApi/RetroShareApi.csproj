@@ -47,7 +47,9 @@
     <Compile Include="Connection\HTTPConnection.cs" />
     <Compile Include="Connection\IConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\Chat\Lobbies.cs" />
     <Compile Include="Request\Request.cs" />
+    <Compile Include="Response\Chat\Lobbies.cs" />
     <Compile Include="Response\Response.cs" />
   </ItemGroup>
   <ItemGroup>

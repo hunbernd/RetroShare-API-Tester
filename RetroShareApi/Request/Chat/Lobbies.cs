@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RetroShareApi.Request.Chat
 {
-    public class Lobbies : Request<List<Response.Chat.Lobbies>>
+    public class Lobbies : Request<List<Response.Chat.Lobby>>
     {
         public Lobbies() : base("chat", "lobbies") { }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RetroShareApi.Response.Chat
 {
-    public class Lobbies
+    public class Lobby
     {
         public bool auto_subscribe;
         public string chat_id;

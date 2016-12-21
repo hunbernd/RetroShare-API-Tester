@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using IrcDotNet;
 using System.Text.RegularExpressions;
+using BotHost.Markov;
 
 namespace BotHost
 {
@@ -24,6 +25,7 @@ namespace BotHost
             IConnection con = new HTTPConnection(new Uri(@"http://localhost:9090"));
             Dictionary<string, RetroShareApi.Request.Chat.Messages> requests = new Dictionary<string, RetroShareApi.Request.Chat.Messages>();
 
+            Util.con = con;
             bot = new MarkovChainTextBot();
 
             Thread t = new Thread(Consume);
@@ -72,6 +74,9 @@ namespace BotHost
             var line = msg.text;
             if (line.Length > 1 && line.StartsWith(ChatCommandPrefix))
             {
+                //Do not respond to commands from previous runs
+                if (msg.time <= (DateTime.Now - new TimeSpan(0, 1, 0))) return;
+
                 // Process command.
                 var parts = commandPartsSplitRegex.Split(line.Substring(1)).Select(p => p.TrimStart('/')).ToArray();
                 var command = parts.First();
@@ -81,8 +86,10 @@ namespace BotHost
                 if (command.Equals("stats")) bot.ProcessChatCommandStats(msg.chatid, command, parameters);
 
             }
-
-            bot.OnChannelMessageReceived(msg.chatid, msg.nick, msg.text);
+            else
+            {
+                bot.OnChannelMessageReceived(msg.chatid, msg.nick, msg.text);
+            }
         }
     }
 

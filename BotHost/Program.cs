@@ -7,17 +7,24 @@ using RetroShareApi.Connection;
 using RetroShareApi.Request;
 using System.Collections.Concurrent;
 using System.Threading;
+using IrcDotNet;
+using System.Text.RegularExpressions;
 
 namespace BotHost
 {
     class Program
     {
         static BlockingCollection<ChatMessage> msgqueue = new BlockingCollection<ChatMessage>();
+        static MarkovChainTextBot bot;
+        static string ChatCommandPrefix = "!";
+        private static readonly Regex commandPartsSplitRegex = new Regex("(?<! /.*) ", RegexOptions.None);
 
         static void Main(string[] args)
         {
             IConnection con = new HTTPConnection(new Uri(@"http://localhost:9090"));
             Dictionary<string, RetroShareApi.Request.Chat.Messages> requests = new Dictionary<string, RetroShareApi.Request.Chat.Messages>();
+
+            bot = new MarkovChainTextBot();
 
             Thread t = new Thread(Consume);
             t.Start();
@@ -55,8 +62,27 @@ namespace BotHost
             while (true)
             {
                 ChatMessage msg = msgqueue.Take();
-                Console.Out.WriteLine(msg.ToString());
+                ProcessMessage(msg);
             }
+        }
+
+        private static void ProcessMessage(ChatMessage msg)
+        {
+            // Check if given message represents chat command.
+            var line = msg.text;
+            if (line.Length > 1 && line.StartsWith(ChatCommandPrefix))
+            {
+                // Process command.
+                var parts = commandPartsSplitRegex.Split(line.Substring(1)).Select(p => p.TrimStart('/')).ToArray();
+                var command = parts.First();
+                var parameters = parts.Skip(1).ToArray();
+
+                if (command.Equals("talk")) bot.ProcessChatCommandTalk(msg.chatid, command, parameters);
+                if (command.Equals("stats")) bot.ProcessChatCommandStats(msg.chatid, command, parameters);
+
+            }
+
+            bot.OnChannelMessageReceived(msg.chatid, msg.nick, msg.text);
         }
     }
 

@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Markov\MarkovChain.cs" />
+    <Compile Include="Markov\MarkovChainNode.cs" />
+    <Compile Include="Markov\MarkovChainTextBot.cs" />
+    <Compile Include="Markov\Util.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

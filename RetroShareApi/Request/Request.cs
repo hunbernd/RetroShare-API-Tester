@@ -11,11 +11,18 @@ namespace RetroShareApi.Request
 {
     public class Request <RespType>
     {
-        public Request(string sector, string function = "", string data = null)
+        public Request(IConnection connection, string sector, string function = "", string data = null)
         {
+            this.connection = connection;
             this.sector = sector;
             this.function = function;
             this.data = data;
+        }
+
+        public IConnection connection
+        {
+            get;
+            private set;
         }
 
         public virtual string sector
@@ -36,7 +43,7 @@ namespace RetroShareApi.Request
             protected set;
         }
 
-        public virtual Response<RespType> Execute(IConnection connection)
+        public virtual Response<RespType> Execute()
         {
             return JsonConvert.DeserializeObject<Response<RespType>>(connection.SendRequest(sector, function, data));
         }

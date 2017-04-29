@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RetroShareApi.Connection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace RetroShareApi.Request.Chat
 {
     public class SendMessage : Request<object>
     {
-        public SendMessage(string chatid) : base("chat", "send_message")
+        public SendMessage(IConnection connection, string chatid) : base(connection, "chat", "send_message")
         {
             this.chatid = chatid;
         }

@@ -22,7 +22,12 @@ namespace BotHost
 
         static void Main(string[] args)
         {
-            IConnection con = new HTTPConnection(new Uri(@"http://localhost:9090"));
+            IConnection con;
+            if (args.Length > 0)
+                con = new HTTPConnection(new Uri(args[0]));
+            else
+                con = new HTTPConnection(new Uri(@"http://localhost:9090"));
+
             Dictionary<string, RetroShareApi.Request.Chat.Messages> requests = new Dictionary<string, RetroShareApi.Request.Chat.Messages>();
 
             Util.con = con;
@@ -52,6 +57,7 @@ namespace BotHost
                         chatmsg.chatid = lobby.chat_id;
                         chatmsg.text = msg.msg;
                         chatmsg.time = (new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).AddSeconds(msg.send_time).ToLocalTime();
+                        chatmsg.incoming = msg.incoming;
                         msgqueue.Add(chatmsg);
                     }
                 }
@@ -88,7 +94,8 @@ namespace BotHost
             }
             else
             {
-                bot.OnChannelMessageReceived(msg.chatid, msg.nick, msg.text);
+                if(msg.incoming)
+                    bot.OnChannelMessageReceived(msg.chatid, msg.nick, msg.text);
             }
         }
     }
@@ -99,6 +106,7 @@ namespace BotHost
         public string chatid;
         public DateTime time;
         public string text;
+        public bool incoming;
 
         public override string ToString()
         {

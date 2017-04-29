@@ -25,15 +25,32 @@ namespace IrcDotNet
 
         // Markov chain object
         private MarkovChain<string> markovChain;
+        private Dictionary<string, MarkovChain<string>> markovChainLocal;
 
         public MarkovChainTextBot()
             : base()
         {
             this.markovChain = new MarkovChain<string>();
+            this.markovChainLocal = new Dictionary<string, MarkovChain<string>>();
 
             this.launchTime = DateTime.Now;
             this.numTrainingMessagesReceived = 0;
             this.numTrainingWordsReceived = 0;
+        }
+
+        private MarkovChain<string> chainForUser(string nick)
+        {
+            if (string.IsNullOrEmpty(nick))
+                return markovChain;
+
+            nick = nick.ToLower();
+            MarkovChain<string> chain;
+            if(!markovChainLocal.TryGetValue(nick, out chain))
+            {
+                chain = new MarkovChain<string>();
+                markovChainLocal.Add(nick, chain);
+            }
+            return chain;
         }
 
         public void OnChannelMessageReceived(string chatid, string nick, string message)
@@ -54,10 +71,12 @@ namespace IrcDotNet
                     //    break;
 
                     markovChain.Train(lastWord, w);
+                    chainForUser(nick).Train(lastWord, w);
                     lastWord = w;
                     this.numTrainingWordsReceived++;
                 }
                 markovChain.Train(lastWord, null);
+                chainForUser(nick).Train(lastWord, null);
             }
             this.numTrainingMessagesReceived++;
             
@@ -73,19 +92,26 @@ namespace IrcDotNet
 
         public void ProcessChatCommandTalk(string chatid, string command, IList<string> parameters)
         {
-            // Send reply containing random message text (generated from Markov chain).
-            int numSentences = -1;
-            if (parameters.Count >= 1)
-                numSentences = int.Parse(parameters[0]);
             string higlightNickName = null;
-            if (parameters.Count >= 2)
-                higlightNickName = parameters[1] + ": ";
+            int numSentences = -1;
+            foreach(string param in parameters)
+            {
+                int i;
+                if (int.TryParse(param, out i))
+                    numSentences = i;
+                else
+                    higlightNickName = param;
+            }
             SendRandomMessage(chatid,
                 higlightNickName, numSentences);
         }
 
         public void ProcessChatCommandStats(string chatid, string command, IList<string> parameters)
         {
+            string nick = "";
+            if (parameters.Count > 0)
+                nick = parameters[0];
+
             Util.SendNotice(chatid, "Bot launch time: {0:f} ({1:g} ago)",
                 this.launchTime,
                 DateTime.Now - this.launchTime);
@@ -93,34 +119,34 @@ namespace IrcDotNet
                 this.numTrainingMessagesReceived,
                 this.numTrainingWordsReceived);
             Util.SendNotice(chatid, "Number of unique words in vocabulary: {0:#,#0}",
-                this.markovChain.Nodes.Count);
+                chainForUser(nick).Nodes.Count);
         }
 
         #endregion
 
-        private void SendRandomMessage(string chatid, string textPrefix,
+        private void SendRandomMessage(string chatid, string nick,
             int numSentences = -1)
         {
-            if (this.markovChain.Nodes.Count == 0)
+            if (chainForUser(nick).Nodes.Count == 0)
             {
                 Util.SendNotice(chatid, "Bot has not yet been trained.");
                 return;
             }
 
             var textBuilder = new StringBuilder();
-            if (textPrefix != null)
-                textBuilder.Append(textPrefix);
+            if (nick != null)
+                textBuilder.Append(nick + ": ");
 
             // Use Markov chain to generate random message, composed of one or more sentences.
             if (numSentences == -1)
                 numSentences = this.random.Next(1, 4);
             for (int i = 0; i < numSentences; i++)
-                textBuilder.Append(GenerateRandomSentence());
+                textBuilder.Append(GenerateRandomSentence(nick));
 
             Util.SendMessage(chatid, textBuilder.ToString());
         }
 
-        private string GenerateRandomSentence()
+        private string GenerateRandomSentence(string nick)
         {
             // Generate sentence by using Markov chain to produce sequence of random words.
             // Note: There must be at least three words in sentence.
@@ -128,7 +154,7 @@ namespace IrcDotNet
             string[] words;
             do
             {
-                words = this.markovChain.GenerateSequence().ToArray();
+                words = chainForUser(nick).GenerateSequence().ToArray();
             }
             while (words.Length < 3 && trials++ < 10);
 

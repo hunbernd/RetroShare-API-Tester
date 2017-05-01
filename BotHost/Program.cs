@@ -24,19 +24,19 @@ namespace BotHost
 
             while (true)
             {
-                RetroShareApi.Request.Chat.Lobbies lobbies = new RetroShareApi.Request.Chat.Lobbies();
-                foreach (RetroShareApi.Response.Chat.Lobby lobby in lobbies.Execute(con).data)
+                RetroShareApi.Request.Chat.Lobbies lobbies = new RetroShareApi.Request.Chat.Lobbies(con);
+                foreach (RetroShareApi.Response.Chat.Lobby lobby in lobbies.Execute().data)
                 {
                     if (!lobby.subscribed || lobby.is_broadcast) continue;              
                     RetroShareApi.Request.Chat.Messages msgreq;
                     bool found = requests.TryGetValue(lobby.id, out msgreq);
                     if (!found)
                     {
-                        msgreq = new RetroShareApi.Request.Chat.Messages(lobby.chat_id);
+                        msgreq = new RetroShareApi.Request.Chat.Messages(con, lobby.chat_id);
                         requests.Add(lobby.id, msgreq);
                     }
 
-                    foreach (RetroShareApi.Response.Chat.Message msg in msgreq.Execute(con).data)
+                    foreach (RetroShareApi.Response.Chat.Message msg in msgreq.Execute().data)
                     {
                         BotHost.ChatMessage chatmsg = new ChatMessage();
                         chatmsg.nick = msg.author_name;

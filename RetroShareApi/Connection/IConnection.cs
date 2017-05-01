@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace RetroShareApi.Connection
 {
-    public interface IConnection
-    {
-        string SendRequest(string sector, string function = "", string data = null);
-    }
+	public interface IConnection
+	{
+		string SendRequest(string sector, string function = "", string data = null);
+	}
 }

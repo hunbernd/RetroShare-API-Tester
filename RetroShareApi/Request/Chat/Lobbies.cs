@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace RetroShareApi.Request.Chat
 {
-    public class Lobbies : Request<List<Response.Chat.Lobby>>
-    {
-        public Lobbies(IConnection connection) : base(connection, "chat", "lobbies") { }
-    }
+	public class Lobbies : Request<List<Response.Chat.Lobby>>
+	{
+		public Lobbies(IConnection connection) : base(connection, "chat", "lobbies") { }
+	}
 }

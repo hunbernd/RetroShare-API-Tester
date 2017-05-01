@@ -23,9 +23,8 @@ namespace RSApiTester
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			if (textBox1.Text != "" && client == null)
-			{
-				client = new HTTPConnection( new Uri(textBox1.Text));
+			if(textBox1.Text != "" && client == null) {
+				client = new HTTPConnection(new Uri(textBox1.Text));
 				button1.Enabled = false;
 				button2.Enabled = true;
 			}
@@ -38,34 +37,28 @@ namespace RSApiTester
 
 		string sendRequest(string sector, string function, string data)
 		{
-            return client.SendRequest(sector, function, data);
+			return client.SendRequest(sector, function, data);
 		}
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            try {
-                string txt = sendRequest(textBox2.Text, textBox3.Text, textBox5.Text);
-                textBox4.Text = txt;
-            } catch(Exception ex)
-            {
-                textBox4.Text = ex.ToString();
-            }
+		private void button2_Click(object sender, EventArgs e)
+		{
+			try {
+				string txt = sendRequest(textBox2.Text, textBox3.Text, textBox5.Text);
+				textBox4.Text = txt;
+			} catch(Exception ex) {
+				textBox4.Text = ex.ToString();
+			}
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			StreamReader file = null;
-			try
-			{
+			try {
 				file = new StreamReader("defaultconnection.txt");
 				textBox1.Text = file.ReadToEnd();
-			}
-			catch
-			{
-			}
-			finally
-			{
-				if (file != null)
+			} catch {
+			} finally {
+				if(file != null)
 					file.Dispose();
 			}
 		}

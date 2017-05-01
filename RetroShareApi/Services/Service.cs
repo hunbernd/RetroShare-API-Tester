@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace RetroShareApi.Services
 {
-    public abstract class Service
-    {
-        public readonly ServiceManager serviceManager;
+	public abstract class Service
+	{
+		public readonly ServiceManager serviceManager;
 
-        Service(ServiceManager servicemanager)
-        {
-            this.serviceManager = servicemanager;
-            
-        }      
-    }
+		Service(ServiceManager servicemanager)
+		{
+			this.serviceManager = servicemanager;
+		}
+	}
 }

@@ -7,32 +7,32 @@ using System.Threading.Tasks;
 
 namespace RetroShareApi.Request.Chat
 {
-    public class SendMessage : Request<object>
-    {
-        public SendMessage(IConnection connection, string chatid) : base(connection, "chat", "send_message")
-        {
-            this.chatid = chatid;
-        }
+	public class SendMessage : Request<object>
+	{
+		public SendMessage(IConnection connection, string chatid) : base(connection, "chat", "send_message")
+		{
+			this.chatid = chatid;
+		}
 
-        public string chatid
-        {
-            get;
-            private set;
-        }
+		public string chatid
+		{
+			get;
+			private set;
+		}
 
-        private string _message;
+		private string _message;
 
-        public string message
-        {
-            get
-            {
-                return _message;
-            }
-            set
-            {
-                _message = value;
-                data = "{\"chat_id\":\"" + chatid + "\",\"msg\":\"" + _message + "\"}";
-            }
-        }
-    }
+		public string message
+		{
+			get
+			{
+				return _message;
+			}
+			set
+			{
+				_message = value;
+				data = "{\"chat_id\":\"" + chatid + "\",\"msg\":\"" + _message + "\"}";
+			}
+		}
+	}
 }

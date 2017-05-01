@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RetroShareApi.Connection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,14 @@ namespace RetroShareApi.Services
 	{
 		public readonly ServiceManager serviceManager;
 
-		Service(ServiceManager servicemanager)
+		protected Service(ServiceManager servicemanager)
 		{
 			this.serviceManager = servicemanager;
+		}
+
+		public IConnection connection
+		{
+			get { return serviceManager.connection; }
 		}
 	}
 }

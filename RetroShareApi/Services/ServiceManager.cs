@@ -11,21 +11,26 @@ namespace RetroShareApi.Services
 	{
 		public readonly IConnection connection;
 
-		private Dictionary<Type, Service> servicecache;
+		private Dictionary<string, Service> servicecache;
 
 		public ServiceManager(IConnection connection)
 		{
 			this.connection = connection;
-			servicecache = new Dictionary<Type, Service>();
+			servicecache = new Dictionary<string, Service>();
 		}
 
-		public T getService<T>() where T : Service, new()
+		public Service getService(string servicename)
 		{
-			if(servicecache.ContainsKey(typeof(T))) {
-				return (T)servicecache[typeof(T)];
+			if(servicecache.ContainsKey(servicename)) {
+				return servicecache[servicename];
 			} else {
-				T service = new T();
-				servicecache.Add(typeof(T), service);
+				Service service;
+				switch(servicename) {
+					default:
+						throw new Exception("Service does not exists");
+				}
+
+				servicecache.Add(servicename, service);
 				return service;
 			}
 		}

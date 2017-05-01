@@ -54,6 +54,8 @@
     <Compile Include="Response\Chat\Lobbies.cs" />
     <Compile Include="Response\Chat\Messages.cs" />
     <Compile Include="Response\Response.cs" />
+    <Compile Include="Services\Service.cs" />
+    <Compile Include="Services\ServiceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

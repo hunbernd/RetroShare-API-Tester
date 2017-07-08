@@ -10,7 +10,7 @@ namespace RetroShareApi.Services.Chat
 	public class ChatService : Service
 	{
 		private Dictionary<string, RetroShareApi.Request.Chat.Messages> requests = new Dictionary<string, RetroShareApi.Request.Chat.Messages>();
-		public delegate void NewChatMessageHandler(IChat source, string author_id, string author_name, DateTime send_time, string message);
+		public delegate void NewChatMessageHandler(IChat source, string author_id, string author_name, DateTime send_time, string message, bool incoming);
 		public event NewChatMessageHandler OnChatMessage;
 		Timer timer;
 
@@ -30,8 +30,8 @@ namespace RetroShareApi.Services.Chat
 					requests.Add(lobby.id, msgreq);
 				}				
 				foreach(Response.Chat.Message msg in msgreq.Execute().data) {
-					DateTime time = (new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).AddSeconds(msg.send_time).ToLocalTime();
-					OnChatMessage(lobby, msg.author_id, msg.author_name, time, msg.msg);
+					DateTime time = (new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).AddSeconds(msg.send_time).ToLocalTime();					
+					OnChatMessage(lobby, msg.author_id, msg.author_name, time, msg.msg, msg.incoming);
 				}
 			}
 

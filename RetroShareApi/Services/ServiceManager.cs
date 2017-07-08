@@ -1,4 +1,5 @@
 ﻿using RetroShareApi.Connection;
+using RetroShareApi.Services.Chat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,16 @@ namespace RetroShareApi.Services
 			servicecache = new Dictionary<string, Service>();
 		}
 
-		public Service getService(string servicename)
+		public Service GetService(string servicename)
 		{
 			if(servicecache.ContainsKey(servicename)) {
 				return servicecache[servicename];
 			} else {
 				Service service;
 				switch(servicename) {
+					case "chat":
+						service = new ChatService(this);
+						break;
 					default:
 						throw new Exception("Service does not exists");
 				}

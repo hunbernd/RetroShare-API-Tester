@@ -47,5 +47,14 @@ namespace RetroShareApi.Request
 		{
 			return JsonConvert.DeserializeObject<Response<RespType>>(connection.SendRequest(sector, function, data));
 		}
+
+		public RespType ExecuteWithError()
+		{
+			Response<RespType> resp = this.Execute();
+			if(resp.returncode.Equals("ok"))
+				return resp.data;
+			else
+				throw new Exception(resp.debug_msg);
+		}
 	}
 }

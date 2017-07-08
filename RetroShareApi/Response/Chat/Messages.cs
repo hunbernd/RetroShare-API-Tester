@@ -12,7 +12,7 @@ namespace RetroShareApi.Response.Chat
 		public string author_name;
 		public string id;
 		public bool incoming;
-		public List<string> links;
+		//public List<string> links;
 		public string msg;
 		public long recv_time;
 		public long send_time;

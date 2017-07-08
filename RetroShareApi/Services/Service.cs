@@ -16,7 +16,7 @@ namespace RetroShareApi.Services
 			this.serviceManager = servicemanager;
 		}
 
-		public IConnection connection
+		public IConnection Connection
 		{
 			get { return serviceManager.connection; }
 		}
